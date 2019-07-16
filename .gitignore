@@ -1,0 +1,5 @@
+*.RData
+*.7z
+/__pycache__/*
+/Legacy/*
+/Models/*
