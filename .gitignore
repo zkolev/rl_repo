@@ -3,4 +3,5 @@
 /__pycache__/*
 /Legacy/*
 /Models/*
+/LocalData/*
 /Environments/General/__pycache__/*

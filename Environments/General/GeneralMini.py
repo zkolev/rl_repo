@@ -64,7 +64,7 @@ class GeneralGame():
         self.positions = [MandatoryPosition(1, 'One', True)
 						 ,MandatoryPosition(2, 'Two', True)]
         
-        self.position_names = [p.get_position_name() for p in self.positions]
+        self.position_names = [p.get_position_name() for p in self.positions]state_space
         
         ## Game controls 
         self.remaining_rolls = 3

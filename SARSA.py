@@ -1,100 +1,10 @@
 import numpy as np
-from itertools import product 
+from itertools import product
 import random
-from GeneralMini import GeneralGame
-
+from Environments.GeneralGame.GeneralMini import GeneralGame
 import pickle
 
 ## The action set depends on the state of the environment
-## The following function lists all possible actions that 
-## can be executed
-
-def get_actions_set(env):
-    
-    ## Get the state of the environment
-    s = env.get_game_state()
-    
-    ## Ctreate placeholder for the action set 
-    rd_action_set_raw = []
-    
-    for d1 in range(env.dices_agg[0]+1):
-        for d2 in range(env.dices_agg[1]+1):
-            for d3 in range(env.dices_agg[2]+1):
-                for d4 in range(env.dices_agg[3]+1):
-                    for d5 in range(env.dices_agg[4]+1):
-                        for d6 in range(env.dices_agg[5]+1):
-                            rd_action_set_raw.append((d1,d2,d3,d4,d5,d6))
-                        
-    rd_action_set= np.array(rd_action_set_raw, dtype = int)[1:,]
-    
-#    state_value = tuple(s.keys())[0]
-    ## Get the score board state:
-    sb = env.get_scoreboard_state()
-    
-    ## If # dice rolls = 3 means that the round has just started
-    ## The only action is to roll all five dices 
-    
-    A = []
-    B = []
-    
-    if s[0] == 3:
-        A.append(('Roll',(0,0,0,0,0,0)))
-    else:
-        for sb_i in sb:
-            if sb_i[1]:
-                A.append(('Checkout',(sb_i[0])))
-                B.append(sb_i[0])
-                
-        ## Add dice roll if remaining rolls > 0
-        if s[0] > 0:
-            rws, _= rd_action_set.shape
-            for rs in range(rws):
-                A.append(('Roll', tuple(rd_action_set[rs,:].flatten())))
-        
-        ## If All positions are checked out then return emtpy list 
-        ## This means that the game is in terminal state
-        
-        if all([not i for i in B]):
-            A = []
-    
-    return(A)
-        
-## Apply action to the environment
-### a should be dictionary with 1 element 
-### The key of the dictionary should be the parameter 
-### The value should be the type of the action
-### There are 2 main types of actions - Checkout and Roll    
-
-def perform_action(env, a):
-    Action_Key = a[1]
-    Action_Value = a[0]
-    
-    if Action_Value == 'Roll':
-        env.round_roll(Action_Key)
-        
-        ## When you roll the dice you do not get scores
-        r = 0
-        s = env.get_game_state()
-    else:
-        env.checkout_position(Action_Key)
-        r = env.last_score
-        s = env.get_game_state()
-    return((s,a,r))
-
-
-## Define function with random action 
-## That will implement eps greedy strategy
-    
-
-def eps_greedy(a, A, eps = 0.1):
-    ## Eps Soft implementation
-    
-    p = np.random.random()
-    if p < (1 - eps):
-        return(a)
-    else:
-        return random.sample(A, k = 1)[0]
-
 #########
 
 def max_dict(d):
@@ -169,7 +79,7 @@ def play_game_sarsa(env, P, Q, U, t = 1, eps = 0.3, ALPHA = 1, GAMMA = 1):
 
         s2, _ , r = perform_action(env, a)
         total_reward += r
-#        print("Rew", r)
+
         #################################################
         ### REITERATE THE LOGIC FOR STATE AND ACTIONS ###
         #################################################
