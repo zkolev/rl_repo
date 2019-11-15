@@ -1,16 +1,14 @@
 ## SETUP: 
 
-
 ## LOAD LIBRARIES: 
 require(tidyverse)
 require(reticulate)
 
 ## SET WD: 
-setwd('C:\\006 Learning\\RL')
+setwd('E:\\RL')
 
 ## SETUP PYTHON ENV:
-reticulate::use_condaenv('dlr_env')
-
+reticulate::use_condaenv('tf_gpu')
 
 ## DEFINE UTILITY FUNCTIONS: 
 
@@ -106,13 +104,13 @@ structure_av <- function(my_avalue) {
 
 
 ## LOAD DATA: 
-my_policy = py_load_object("C:\\006 Learning\\RL\\SARSA RESULTS\\policy.pickle")
-my_avalue = py_load_object("C:\\006 Learning\\RL\\SARSA RESULTS\\action_value.pickle")
+my_policy = py_load_object("E:\\RL\\Results\\policy.pickle")
+my_avalue = py_load_object("E:\\RL\\Results\\action_value.pickle")
 
 
-baseline_reward <- py_load_object("C:\\006 Learning\\RL\\SARSA RESULTS\\baseline_reward.pickle")
-sarsa_reward <- py_load_object("C:\\006 Learning\\RL\\SARSA RESULTS\\training_rewards.pickle")
-eval_rew = py_load_object("C:\\006 Learning\\RL\\SARSA RESULTS\\evaluated_rewards.pickle")
+# baseline_reward <- py_load_object("E:\\RL\\Results\\baseline_reward.pickle")
+sarsa_reward <- py_load_object("E:\\RL\\Results\\training_rewards.pickle")
+eval_rew = py_load_object("E:\\RL\\Results\\evaluated_rewards.pickle")
   
 
 ## Structure policy ## 
@@ -137,20 +135,20 @@ names(policy_structured) <- names_vector
 # avalue_structured <- do.call(bind_rows, avalue_structured)
 
 ##
-baseline_df = tibble::as_tibble(do.call(rbind, lapply(baseline_reward,c))) %>% unnest()
+# baseline_df = tibble::as_tibble(do.call(rbind, lapply(baseline_reward,c))) %>% unnest()
 evaluated_df = tibble::as_tibble(do.call(rbind, lapply(sarsa_reward,c))) %>% unnest()
 eval_samples = tibble::as_tibble(do.call(cbind, lapply(eval_rew,c))) %>% unnest()
   
 
-## Aggregate the baseline function:
-baseline_shares = baseline_df %>% 
-  group_by(V2) %>%
-  summarise(tot = n()) %>%
-  ungroup() %>% 
-  transmute(tot = tot/sum(tot)
-        ,field = -1
-        ,value = V2 
-        )
+# ## Aggregate the baseline function:
+# baseline_shares = baseline_df %>% 
+#   group_by(V2) %>%
+#   summarise(tot = n()) %>%
+#   ungroup() %>% 
+#   transmute(tot = tot/sum(tot)
+#         ,field = -1
+#         ,value = V2 
+#         )
 
 ## Inspect the model performance 
 ## As it evolves
@@ -167,7 +165,7 @@ eval_samples %>%
   mutate(tot = tot/sum(tot)) %>% 
   ungroup() %>% 
   mutate(field = as.numeric(gsub('V', '',field))) %>% 
-  bind_rows(baseline_shares) %>% 
+  # bind_rows(baseline_shares) %>% 
   ggplot(aes(x = factor(field), y = tot, fill = factor(value))) + 
   geom_bar(stat = 'identity', position = 'fill')
 

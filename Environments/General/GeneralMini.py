@@ -64,7 +64,7 @@ class GeneralGame():
         self.positions = [MandatoryPosition(1, 'One', True)
 						 ,MandatoryPosition(2, 'Two', True)]
         
-        self.position_names = [p.get_position_name() for p in self.positions]state_space
+        self.position_names = [p.get_position_name() for p in self.positions]
         
         ## Game controls 
         self.remaining_rolls = 3
@@ -355,6 +355,10 @@ class GeneralGame():
     
     def get_actions_set(self):
         
+        if self.game_over:
+            return([('TerminalState',(0,0,0,0,0,0))])
+		
+		
             ## Get the state of the environmen
         s = self.game_state
         

@@ -5,3 +5,7 @@
 /Models/*
 /LocalData/*
 /Environments/General/__pycache__/*
+*.Rhistory
+*.csv
+*.rds
+/Data/*
